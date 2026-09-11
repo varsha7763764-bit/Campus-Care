@@ -94,10 +94,51 @@ export type PageKey =
   | 'emergency'
   | 'lpu-healthcare'
   | 'consultation'
-  | 'prescription';
+  | 'prescription'
+  | 'assistant'
+  | 'rewards'
+  | 'daily-plan';
 
 export interface NavItem {
   key: PageKey;
   label: string;
   icon: string;
 }
+
+export interface User {
+  name: string;
+  email: string;
+  password: string;
+}
+
+export interface DailyTask {
+  id: string;
+  label: string;
+  slot: 'Morning' | 'Afternoon' | 'Evening' | 'Night';
+  type: 'medicine' | 'wellbeing' | 'lifestyle';
+  icon: string;
+  completed: boolean;
+  date: string;
+  source?: string;
+}
+
+export interface BadgeDef {
+  id: string;
+  label: string;
+  description: string;
+  icon: string;
+  color: string;
+  threshold: number;
+  unit: 'points' | 'streak' | 'medicines' | 'tasks';
+}
+
+export interface GamificationState {
+  points: number;
+  streak: number;
+  lastActiveDate: string;
+  totalMedicinesTaken: number;
+  totalTasksCompleted: number;
+  earnedBadges: string[];
+}
+
+

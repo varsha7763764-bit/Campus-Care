@@ -220,3 +220,13 @@ export const medicineCatalog = [
   { name: 'Azithromycin 500 mg', category: 'Antibiotic', use: 'Bacterial infections (prescription only)' },
   { name: 'Cough Syrup', category: 'Cold Relief', use: 'Dry cough, throat irritation' },
 ];
+
+export const badgeDefs = [
+  { id: 'hydration-hero', label: 'Hydration Hero', description: 'Complete 10 water intake tasks', icon: 'Droplets', color: 'from-cyan-500 to-blue-600', threshold: 10, unit: 'tasks' as const },
+  { id: 'sleep-champion', label: 'Sleep Champion', description: 'Complete 10 sleep reminder tasks', icon: 'Moon', color: 'from-indigo-500 to-violet-600', threshold: 10, unit: 'tasks' as const },
+  { id: 'medicine-master', label: 'Medicine Master', description: 'Take 20 medicines on schedule', icon: 'Pill', color: 'from-teal-500 to-emerald-600', threshold: 20, unit: 'medicines' as const },
+  { id: '7-day-streak', label: '7-Day Streak', description: 'Maintain a 7-day health streak', icon: 'Flame', color: 'from-orange-500 to-red-600', threshold: 7, unit: 'streak' as const },
+  { id: 'first-steps', label: 'First Steps', description: 'Earn your first 50 health points', icon: 'Award', color: 'from-blue-500 to-indigo-600', threshold: 50, unit: 'points' as const },
+  { id: 'health-enthusiast', label: 'Health Enthusiast', description: 'Earn 200 health points', icon: 'Star', color: 'from-amber-500 to-orange-600', threshold: 200, unit: 'points' as const },
+  { id: 'routine-pro', label: 'Routine Pro', description: 'Complete 50 daily plan tasks', icon: 'CalendarCheck', color: 'from-primary-500 to-secondary-600', threshold: 50, unit: 'tasks' as const },
+];

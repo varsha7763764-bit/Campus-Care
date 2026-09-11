@@ -12,6 +12,10 @@ import {
   Activity,
   ArrowRight,
   TrendingUp,
+  Trophy,
+  CalendarCheck,
+  Sparkles,
+  Flame,
 } from 'lucide-react';
 import { useApp, DAYS } from '@/context/AppContext';
 import { doctors } from '@/data/doctors';
@@ -19,7 +23,9 @@ import { ProgressRing, DoctorAvatar, Badge } from '@/components/ui';
 import { demoMoods } from '@/data/demoData';
 
 export function Dashboard() {
-  const { navigate, appointments, routine, currentDay, moods, addMood } = useApp();
+  const { navigate, appointments, routine, currentDay, moods, addMood, user, gamification, dailyTasks } = useApp();
+
+  const studentName = user?.name?.split(' ')[0] || 'Student';
 
   const todayMeds = routine.filter(m => m.days.includes(DAYS[currentDay]));
   const takenToday = todayMeds.filter(m => m.taken[currentDay]).length;
@@ -38,8 +44,8 @@ export function Dashboard() {
 
   const quickActions = [
     { label: 'Find Doctor', icon: Stethoscope, color: 'from-blue-500 to-blue-600', action: () => navigate('find-doctor') },
-    { label: 'Book Appointment', icon: CalendarPlus, color: 'from-indigo-500 to-indigo-600', action: () => navigate('find-doctor') },
-    { label: 'Medical Routine', icon: Pill, color: 'from-teal-500 to-cyan-600', action: () => navigate('medical-routine') },
+    { label: 'Daily Plan', icon: CalendarCheck, color: 'from-teal-500 to-cyan-600', action: () => navigate('daily-plan') },
+    { label: 'Health Rewards', icon: Trophy, color: 'from-amber-500 to-orange-600', action: () => navigate('rewards') },
     { label: 'Emergency', icon: Siren, color: 'from-red-500 to-red-600', action: () => navigate('emergency') },
   ];
 
@@ -54,7 +60,7 @@ export function Dashboard() {
             <Heart className="w-5 h-5 text-white/80" fill="white" />
             <span className="text-sm font-medium text-white/80">CampusCare</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold mb-1">{greeting}, Student!</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold mb-1">{greeting}, {studentName}!</h1>
           <p className="text-white/80 text-sm max-w-md">
             Here's your health overview for today. Stay healthy, stay focused.
           </p>
@@ -70,6 +76,10 @@ export function Dashboard() {
             <div className="bg-white/15 backdrop-blur-sm rounded-xl px-4 py-2.5">
               <span className="text-xs text-white/70">Care Team</span>
               <p className="text-lg font-bold">{doctors.filter(d => d.rating >= 4.7).length} doctors</p>
+            </div>
+            <div className="bg-white/15 backdrop-blur-sm rounded-xl px-4 py-2.5">
+              <span className="text-xs text-white/70">Health Streak</span>
+              <p className="text-lg font-bold">{gamification.streak} days</p>
             </div>
           </div>
         </div>
@@ -231,6 +241,73 @@ export function Dashboard() {
               ))}
             </div>
           )}
+        </div>
+      </div>
+
+      {/* Daily Plan + Rewards Summary */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="card p-5">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-semibold text-slate-800 flex items-center gap-2">
+              <CalendarCheck className="w-4 h-4 text-primary-600" />
+              Daily Health Plan
+            </h3>
+            <button onClick={() => navigate('daily-plan')} className="text-xs font-medium text-primary-600 hover:text-primary-700">
+              View all
+            </button>
+          </div>
+          {dailyTasks.length > 0 ? (
+            <div className="space-y-2">
+              {dailyTasks.slice(0, 4).map(task => (
+                <div key={task.id} className="flex items-center gap-3 p-2.5 rounded-xl bg-slate-50">
+                  {task.completed ? (
+                    <CheckCircle2 className="w-5 h-5 text-success-500 flex-shrink-0" />
+                  ) : (
+                    <Circle className="w-5 h-5 text-slate-300 flex-shrink-0" />
+                  )}
+                  <p className={`text-sm flex-1 ${task.completed ? 'text-slate-400 line-through' : 'text-slate-700'}`}>{task.label}</p>
+                  <span className="text-[10px] font-medium text-slate-400">{task.slot}</span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-sm text-slate-400 text-center py-4">No tasks generated yet.</p>
+          )}
+        </div>
+
+        <div className="card p-5 bg-gradient-to-br from-amber-50 to-orange-50">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-semibold text-slate-800 flex items-center gap-2">
+              <Trophy className="w-4 h-4 text-amber-600" />
+              Health & Rewards
+            </h3>
+            <button onClick={() => navigate('rewards')} className="text-xs font-medium text-primary-600 hover:text-primary-700">
+              View all
+            </button>
+          </div>
+          <div className="flex items-center gap-6">
+            <div className="text-center">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center mx-auto mb-2">
+                <Flame className="w-7 h-7 text-white" fill="white" />
+              </div>
+              <p className="text-2xl font-bold text-slate-800">{gamification.streak}</p>
+              <p className="text-xs text-slate-400">day streak</p>
+            </div>
+            <div className="text-center">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary-500 to-secondary-600 flex items-center justify-center mx-auto mb-2">
+                <Trophy className="w-7 h-7 text-white" fill="white" />
+              </div>
+              <p className="text-2xl font-bold text-slate-800">{gamification.points}</p>
+              <p className="text-xs text-slate-400">points</p>
+            </div>
+            <div className="text-center">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-teal-500 to-emerald-600 flex items-center justify-center mx-auto mb-2">
+                <Sparkles className="w-7 h-7 text-white" />
+              </div>
+              <p className="text-2xl font-bold text-slate-800">{gamification.earnedBadges.length}</p>
+              <p className="text-xs text-slate-400">badges</p>
+            </div>
+          </div>
         </div>
       </div>
 

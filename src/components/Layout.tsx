@@ -13,6 +13,10 @@ import {
   X,
   Heart,
   Activity,
+  Sparkles,
+  Trophy,
+  CalendarCheck,
+  LogOut,
 } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 import type { PageKey } from '@/types';
@@ -25,18 +29,43 @@ const navItems: { key: PageKey; label: string; icon: typeof LayoutDashboard }[] 
   { key: 'care-team', label: 'My Care Team', icon: Users },
   { key: 'medicines', label: 'Medicines', icon: Package },
   { key: 'wellbeing', label: 'Wellbeing', icon: HeartPulse },
+  { key: 'daily-plan', label: 'My Daily Plan', icon: CalendarCheck },
+  { key: 'rewards', label: 'Health & Rewards', icon: Trophy },
+  { key: 'assistant', label: 'CampusCare Assistant', icon: Sparkles },
   { key: 'emergency', label: 'Emergency', icon: Siren },
   { key: 'lpu-healthcare', label: 'LPU Healthcare', icon: MapPin },
 ];
 
 export function Layout({ children }: { children: ReactNode }) {
-  const { currentPage, navigate } = useApp();
+  const { currentPage, navigate, user, logout } = useApp();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleNav = (key: PageKey) => {
     navigate(key);
     setMobileOpen(false);
   };
+
+  const isActive = (item: { key: PageKey }) =>
+    currentPage === item.key ||
+    (item.key === 'find-doctor' && currentPage === 'doctor-profile') ||
+    (item.key === 'appointments' && (currentPage === 'consultation' || currentPage === 'prescription'));
+
+  const UserSection = () => (
+    <div className="px-4 py-3 border-t border-slate-100">
+      <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl">
+        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary-500 to-secondary-600 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+          {user?.name?.charAt(0).toUpperCase() || 'S'}
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-semibold text-slate-700 truncate">{user?.name || 'Student'}</p>
+          <p className="text-[11px] text-slate-400 truncate">{user?.email || 'student@lpu.in'}</p>
+        </div>
+        <button onClick={logout} className="p-2 rounded-lg text-slate-400 hover:text-danger-600 hover:bg-danger-50 transition-all" title="Logout">
+          <LogOut className="w-4 h-4" />
+        </button>
+      </div>
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-slate-50 flex">
@@ -54,15 +83,11 @@ export function Layout({ children }: { children: ReactNode }) {
         <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
           {navItems.map(item => {
             const Icon = item.icon;
-            const active = currentPage === item.key ||
-              (item.key === 'find-doctor' && currentPage === 'doctor-profile') ||
-              (item.key === 'appointments' && currentPage === 'consultation') ||
-              (item.key === 'appointments' && currentPage === 'prescription');
             return (
               <button
                 key={item.key}
                 onClick={() => handleNav(item.key)}
-                className={`nav-item w-full text-left ${active ? 'nav-item-active' : ''}`}
+                className={`nav-item w-full text-left ${isActive(item) ? 'nav-item-active' : ''}`}
               >
                 <Icon className="w-5 h-5 flex-shrink-0" />
                 <span className="text-sm">{item.label}</span>
@@ -73,7 +98,7 @@ export function Layout({ children }: { children: ReactNode }) {
             );
           })}
         </nav>
-        <div className="px-4 py-4 border-t border-slate-100">
+        <div className="px-4 pb-3">
           <div className="bg-gradient-to-br from-primary-50 to-secondary-50 rounded-xl p-4">
             <div className="flex items-center gap-2 mb-2">
               <Activity className="w-4 h-4 text-primary-600" />
@@ -84,6 +109,7 @@ export function Layout({ children }: { children: ReactNode }) {
             </p>
           </div>
         </div>
+        <UserSection />
       </aside>
 
       {/* Mobile Header */}
@@ -94,12 +120,17 @@ export function Layout({ children }: { children: ReactNode }) {
           </div>
           <h1 className="text-base font-bold text-slate-800">CampusCare</h1>
         </div>
-        <button
-          onClick={() => setMobileOpen(true)}
-          className="p-2 rounded-lg hover:bg-slate-100 transition-colors"
-        >
-          <Menu className="w-6 h-6 text-slate-600" />
-        </button>
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary-500 to-secondary-600 flex items-center justify-center text-white font-bold text-xs">
+            {user?.name?.charAt(0).toUpperCase() || 'S'}
+          </div>
+          <button
+            onClick={() => setMobileOpen(true)}
+            className="p-2 rounded-lg hover:bg-slate-100 transition-colors"
+          >
+            <Menu className="w-6 h-6 text-slate-600" />
+          </button>
+        </div>
       </header>
 
       {/* Mobile Drawer */}
@@ -124,14 +155,11 @@ export function Layout({ children }: { children: ReactNode }) {
             <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
               {navItems.map(item => {
                 const Icon = item.icon;
-                const active = currentPage === item.key ||
-                  (item.key === 'find-doctor' && currentPage === 'doctor-profile') ||
-                  (item.key === 'appointments' && (currentPage === 'consultation' || currentPage === 'prescription'));
                 return (
                   <button
                     key={item.key}
                     onClick={() => handleNav(item.key)}
-                    className={`nav-item w-full text-left ${active ? 'nav-item-active' : ''}`}
+                    className={`nav-item w-full text-left ${isActive(item) ? 'nav-item-active' : ''}`}
                   >
                     <Icon className="w-5 h-5 flex-shrink-0" />
                     <span className="text-sm">{item.label}</span>
@@ -142,6 +170,7 @@ export function Layout({ children }: { children: ReactNode }) {
                 );
               })}
             </nav>
+            <UserSection />
           </div>
         </div>
       )}

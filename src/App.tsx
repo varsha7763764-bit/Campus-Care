@@ -12,6 +12,10 @@ import { Medicines } from '@/pages/Medicines';
 import { Wellbeing } from '@/pages/Wellbeing';
 import { Emergency } from '@/pages/Emergency';
 import { LPUHealthcare } from '@/pages/LPUHealthcare';
+import { Login } from '@/pages/Login';
+import { Assistant } from '@/pages/Assistant';
+import { Rewards } from '@/pages/Rewards';
+import { DailyPlan } from '@/pages/DailyPlan';
 
 function PageRouter() {
   const { currentPage } = useApp();
@@ -29,16 +33,31 @@ function PageRouter() {
     case 'wellbeing': return <Wellbeing />;
     case 'emergency': return <Emergency />;
     case 'lpu-healthcare': return <LPUHealthcare />;
+    case 'assistant': return <Assistant />;
+    case 'rewards': return <Rewards />;
+    case 'daily-plan': return <DailyPlan />;
     default: return <Dashboard />;
   }
+}
+
+function AppContent() {
+  const { user } = useApp();
+
+  if (!user) {
+    return <Login />;
+  }
+
+  return (
+    <Layout>
+      <PageRouter />
+    </Layout>
+  );
 }
 
 export default function App() {
   return (
     <AppProvider>
-      <Layout>
-        <PageRouter />
-      </Layout>
+      <AppContent />
     </AppProvider>
   );
 }
